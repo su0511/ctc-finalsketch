@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f4f2eb">
+  <meta name="description" content="Draw your own impossible weather. Shape liquid clouds, falling color, stirred currents, and soft glows with your mouse.">
+  <title>ATMOS — Paint your own weather</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23e7ee9c'/%3E%3Cpath d='M12 43L31 13L51 43M22 33H43' stroke='%23282d28' stroke-width='5' fill='none'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css?v=2-fluid">
+</head>
+<body>
+  <svg class="svg-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+    <symbol id="i-cloud" viewBox="0 0 40 40"><path d="M6 25c-1-6 5-11 11-9 3-9 15-7 15 2 8 2 6 12-2 12H13c-4 0-7-2-7-5Z"/><path d="M11 24c5-5 9 5 15-1M15 34h13"/></symbol>
+    <symbol id="i-rain" viewBox="0 0 40 40"><path d="m12 8-3 8m13-7-5 13m15-10-5 12M12 24 8 34m14-7-3 7m13-5-2 6"/></symbol>
+    <symbol id="i-wind" viewBox="0 0 40 40"><path d="M4 14c10-9 17 13 26 2s-4-14-7-7M4 22c13-7 20 12 31-1M7 30c8-4 15 10 24 1"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 40 40"><circle cx="20" cy="20" r="11"/><circle cx="23" cy="18" r="11"/><path d="M20 2v3m0 30v3M2 20h3m30 0h3M7 7l2 2m22 22 2 2"/></symbol>
+    <symbol id="i-erase" viewBox="0 0 24 24"><path d="m8 18-5-5 10-10 8 8-9 9H8l-2-2m1-9 8 8m-4 3h10"/></symbol>
+    <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 6 4 11l5 5M4 11h10a6 6 0 0 1 6 6v2"/></symbol>
+    <symbol id="i-redo" viewBox="0 0 24 24"><path d="m15 6 5 5-5 5m5-5H10a6 6 0 0 0-6 6v2"/></symbol>
+    <symbol id="i-save" viewBox="0 0 24 24"><path d="M12 3v12m-4-4 4 4 4-4M5 16v4h14v-4"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 20 20"><path d="M7 5v10m6-10v10"/></symbol>
+    <symbol id="i-play" viewBox="0 0 20 20"><path d="m7 4 9 6-9 6Z"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 20 20"><path d="M10 4v12M4 10h12"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 20 20"><path d="M4 10h12m-5-5 5 5-5 5"/></symbol>
+    <symbol id="i-close" viewBox="0 0 20 20"><path d="m5 5 10 10M5 15 15 5"/></symbol>
+  </defs></svg>
+
+  <header class="app-header">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">a<span>°</span></span><div><h1>atmos<span class="brand-dot">.</span></h1><span class="brand-caption">WEATHER AS A MEDIUM</span></div></div>
+    <div class="header-note"><span class="tiny-star">✳</span><span>No forecast. Just feeling.<br><span class="muted">Make the weather your own.</span></span></div>
+    <div class="header-actions"><button class="button new-button" id="new-canvas" aria-label="New canvas" title="New canvas"><svg><use href="#i-plus"/></svg><span>New canvas</span></button><button class="button primary" id="make-picture"><span>Make picture</span><svg><use href="#i-arrow"/></svg></button></div>
+  </header>
+
+  <main class="workspace">
+    <aside class="controls" aria-label="Painting tools">
+      <div class="panel-intro"><span class="eyebrow">YOUR WEATHER, YOUR RULES</span><h2>Paint the impossible.</h2><p>Hold the mouse. Follow a feeling.</p></div>
+      <section class="control-section tools-section">
+        <div class="section-label"><h3>Medium</h3><span>01 — MEDIUM</span></div>
+        <div class="tool-grid" role="group" aria-label="Choose a weather brush">
+          <button class="tool active" data-tool="cloud" aria-pressed="true" title="Cloud · Shortcut 1"><svg><use href="#i-cloud"/></svg><span>Cloud</span><kbd>1</kbd></button>
+          <button class="tool" data-tool="rain" aria-pressed="false" title="Rain · Shortcut 2"><svg><use href="#i-rain"/></svg><span>Rain</span><kbd>2</kbd></button>
+          <button class="tool" data-tool="wind" aria-pressed="false" title="Wind · Shortcut 3"><svg><use href="#i-wind"/></svg><span>Wind</span><kbd>3</kbd></button>
+          <button class="tool" data-tool="sun" aria-pressed="false" title="Light · Shortcut 4"><svg><use href="#i-sun"/></svg><span>Light</span><kbd>4</kbd></button>
+        </div>
+        <p class="tool-description" id="tool-description">Paint molten color. Move slowly and let the clouds unfold.</p>
+      </section>
+
+      <section class="control-section color-section">
+        <div class="section-label"><h3>Color</h3><span>02 — PALETTE</span></div>
+        <div class="palette" role="group" aria-label="Brush colors"></div>
+        <div class="palette-footer"><button id="shuffle-palette" class="text-button" title="Switch color palette">Change mood <span aria-hidden="true">↗</span></button><label class="custom-color" title="Pick any color"><span>Custom</span><input type="color" id="custom-color" value="#a9e4ff" aria-label="Custom brush color"></label></div>
+      </section>
+
+      <section class="control-section sliders-section">
+        <div class="section-label"><h3>Gesture</h3><span>03 — FEEL</span></div>
+        <div class="range-control"><label for="brush-size">Size <output id="brush-size-value">84</output></label><input id="brush-size" type="range" min="20" max="180" value="84"><div class="range-ends"><span>Fine</span><span>Wide</span></div></div>
+        <div class="range-control"><label for="brush-energy">Flow <output id="brush-energy-value">45%</output></label><input id="brush-energy" type="range" min="0" max="100" value="45"><div class="range-ends"><span>Calm</span><span>Wild</span></div></div>
+        <div class="range-control"><label for="brush-opacity">Intensity <output id="brush-opacity-value">65%</output></label><input id="brush-opacity" type="range" min="10" max="100" value="65"></div>
+      </section>
+
+      <section class="paper-section"><span>Canvas</span><div class="paper-swatches" role="group" aria-label="Canvas colors"><button data-paper="#f5f1e7" class="paper active" style="--paper:#f5f1e7" title="Warm white" aria-label="Warm white" aria-pressed="true"></button><button data-paper="#f0d9cc" class="paper" style="--paper:#f0d9cc" title="Blush" aria-label="Blush" aria-pressed="false"></button><button data-paper="#172a39" class="paper" style="--paper:#172a39" title="Midnight" aria-label="Midnight" aria-pressed="false"></button></div><button class="erase-button" data-tool="erase" aria-pressed="false" title="Eraser · E"><svg><use href="#i-erase"/></svg><span>Eraser</span></button></section>
+      <div class="panel-footnote"><span class="live-dot"></span><span>Every gesture brings a little surprise.</span></div>
+    </aside>
+
+    <section class="studio" aria-label="Weather canvas">
+      <div class="studio-top"><div class="artwork-title"><span class="eyebrow">STUDY <span id="study-number">001</span></span><input id="picture-title" value="Untitled atmosphere" maxlength="48" aria-label="Artwork title" spellcheck="false"></div><div class="canvas-actions"><div class="history-actions"><button class="icon-button" id="undo" title="Undo · ⌘/Ctrl Z" aria-label="Undo" disabled><svg><use href="#i-undo"/></svg></button><button class="icon-button" id="redo" title="Redo · ⌘/Ctrl Shift Z" aria-label="Redo" disabled><svg><use href="#i-redo"/></svg></button></div><button class="pause-button" id="pause" aria-label="Pause motion" aria-pressed="false"><span class="live-dot"></span><span id="pause-label">Weather in motion</span><svg id="pause-icon"><use href="#i-pause"/></svg></button></div></div>
+      <div class="canvas-well"><div class="artboard" id="artboard"><canvas id="weather-canvas" width="1440" height="1000" aria-label="Hold and drag your mouse here to paint. Choose Cloud, Rain, Wind, or Light." tabindex="0"></canvas><div class="brush-cursor" id="brush-cursor" hidden><span></span></div><div class="empty-hint" id="empty-hint" hidden><span class="empty-star">✳</span><span>It starts with a gesture.</span><small>Hold and drag to paint your own weather</small></div></div></div>
+      <div class="canvas-caption"><div><span class="caption-mark">↳</span><span id="canvas-hint">Hold and drag to draw · Let your colors collide.</span></div><span class="stroke-count" id="stroke-count">0 strokes</span></div>
+      <div class="inspiration-bar"><span class="inspiration-label">A place to begin<small>Borrow a little weather</small></span><div class="scene-buttons" role="group" aria-label="Example artworks"><button class="scene" data-demo="drift"><span class="scene-thumb drift"></span><span>Daydream<small>Blue, pink &amp; sunshine</small></span></button><button class="scene" data-demo="storm"><span class="scene-thumb storm"></span><span>Solar flare<small>A warmer kind of storm</small></span></button><button class="scene" data-demo="nocturne"><span class="scene-thumb nocturne"></span><span>Night tide<small>After the light fades</small></span></button></div><button class="start-blank text-button" id="start-blank">Start blank <span>↗</span></button></div>
+    </section>
+  </main>
+
+  <footer class="app-footer"><span>AN EXPERIMENT IN IMPOSSIBLE WEATHER</span><button class="text-button" id="help">How to draw <span>?</span></button><span>DRAW · DRIFT · KEEP</span></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <dialog id="picture-dialog"><form method="dialog"><button class="dialog-close icon-button" aria-label="Close picture preview"><svg><use href="#i-close"/></svg></button></form><div class="dialog-heading"><span class="eyebrow">A MOMENT, MADE YOURS</span><h2>Keep this atmosphere.</h2><p id="export-title">Untitled atmosphere</p></div><div class="picture-preview-wrap"><img id="picture-preview" alt="Preview of your weather artwork"></div><div class="export-footer"><span>PNG · <span id="export-resolution">2880 × 2000</span><small>Your artwork, without the interface.</small></span><a id="download-picture" class="button primary" download="atmos.png"><svg><use href="#i-save"/></svg>Save picture</a></div></dialog>
+  <dialog id="help-dialog"><form method="dialog"><button class="dialog-close icon-button" aria-label="Close drawing guide"><svg><use href="#i-close"/></svg></button></form><span class="eyebrow">A SMALL FIELD GUIDE</span><h2>There is no wrong weather.</h2><ol class="help-list"><li><span>01</span><div><strong>Choose a medium. Make it your color.</strong><p>Cloud forms molten color, Rain leaves liquid streaks, Wind stirs the currents, and Light brings a soft glow.</p></div></li><li><span>02</span><div><strong>Hold your mouse and draw.</strong><p>Your speed and direction shape each mark. Try a slow curve, a quick sweep, or layers of different colors.</p></div></li><li><span>03</span><div><strong>Let it drift. Pause whenever you like.</strong><p>Your colors keep moving after your gesture ends. When a moment feels right, choose Make picture to save it.</p></div></li></ol><div class="keyboard-help"><span><kbd>1</kbd>—<kbd>4</kbd> Change medium</span><span><kbd>E</kbd> Eraser</span><span><kbd>Space</kbd> Pause</span><span><kbd>⌘ / Ctrl Z</kbd> Undo</span></div><p class="help-note">Your artwork is saved automatically in this browser. Use Make picture to keep a copy of your own.</p></dialog>
+  <script src="weather-engine.js?v=2-fluid"></script>
+  <script src="app.js?v=2-fluid"></script>
+</body>
+</html>
